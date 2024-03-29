@@ -1,1 +1,1 @@
-# odin-practice
+Just practice.

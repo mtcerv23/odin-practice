@@ -1,0 +1,10 @@
+header {
+    text-align: center;
+    font-weight: bold;
+    font-size: 3rem;
+    background-color: pink;
+}
+
+.library {
+    background-color: rgb(214, 213, 213);
+}
