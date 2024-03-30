@@ -1,4 +1,4 @@
-const myLibrary = [];
+ const myLibrary = [];
 
 function Book(title, author, pages, read) {
     this.title = title;
@@ -20,10 +20,27 @@ function createCard(book) {
     const read = document.createElement('button');
     const deleteButton = document.createElement('button');
     deleteButton.classList.add('delete');
+    deleteButton.addEventListener('click', () => {
+        myLibrary.splice(card.dataset.index, 1);
+        deleteButton.parentElement.remove();
+        displayBooks();
+        });
     title.textContent = book.title;
     author.textContent = book.author;
     pages.textContent = book.pages;
     read.textContent = book.read;
+    read.addEventListener('click', () => {
+        let readStatus = book.read;
+        if (readStatus == 'not read yet') {
+            book.read = 'read';
+            readStatus = 'read';
+        }
+        else {
+            book.read = 'not read yet';
+            readStatus = 'not read yet';
+        }
+        read.textContent = readStatus;
+    })
     deleteButton.textContent = 'Delete';
     card.appendChild(title);
     card.appendChild(author);
@@ -37,20 +54,11 @@ function displayBooks() {
     // Clear all books and populate with updated library
     const library = document.querySelector('.library');
     library.innerHTML = '';
-    for (const book of myLibrary) {
-        const card = createCard(book);
+    for (let i = 0; i < myLibrary.length; i++) {
+        const card = createCard(myLibrary[i]);
+        card.dataset.index = i;
         library.appendChild(card);
     }
-    const cards = library.querySelectorAll('.card');
-    let i = 0;
-    cards.forEach((card) => {
-        card.dataset.index = i;
-        const deleteButton = card.querySelector('.delete');
-        deleteButton.addEventListener('click', () => {
-            console.log(myLibrary);
-            myLibrary.splice(i, 1);
-        });
-    });
 }
 
 const dialog = document.querySelector(".add-modal");
@@ -102,26 +110,4 @@ function bookInLibrary(newBook) {
     } return false;
 }
 
-const theHobbit = new Book("The Hobbit", "J.R.R. Tolkien", 295, "not read yet");
-const harryPotter = new Book("Harry Potter and the Sorcerer's Stone", "J.K. Rowling", 700, "read");
-addBookToLibrary(theHobbit);
-addBookToLibrary(harryPotter);
 displayBooks();
-
-// New Book button
-// 1. New Book button already on screen for new library
-// 2. query select button
-// 3. Create modal with: title, author, pages, read button, delete button
-// Make it sticky after user starts scrolling down page
-// Prevent adding if title already in library
-// Cancel button to close modal and clear fields
-
-// Remove book button
-// 1. Delete from array
-// 2. Delete from DOM
-// 3. Refresh page
-
-// Read status
-// 1. Change in array
-// 2. Change on page
-//   a. Change text content of button
