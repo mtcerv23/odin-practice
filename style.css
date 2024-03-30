@@ -8,3 +8,8 @@ header {
 .library {
     background-color: rgb(214, 213, 213);
 }
+
+.card {
+    width: 300px;
+    border: 1px solid black;
+}

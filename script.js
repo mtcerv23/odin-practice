@@ -12,37 +12,98 @@ function addBookToLibrary(book) {
 }
 
 function createCard(book) {
-    const library = document.querySelector('.library');
     const card = document.createElement('div');
-    const title = document.createElement('div');
-    const author = document.createElement('div');
-    const pages = document.createElement('div');
+    card.classList.add('card');
+    const title = document.createElement('h1');
+    const author = document.createElement('h2');
+    const pages = document.createElement('h3');
     const read = document.createElement('button');
+    const deleteButton = document.createElement('button');
+    deleteButton.classList.add('delete');
     title.textContent = book.title;
     author.textContent = book.author;
     pages.textContent = book.pages;
     read.textContent = book.read;
+    deleteButton.textContent = 'Delete';
     card.appendChild(title);
     card.appendChild(author);
     card.appendChild(pages);
     card.appendChild(read);
-    library.appendChild(card);
+    card.appendChild(deleteButton);
+    return card;
 }
 
 function displayBooks() {
+    // Clear all books and populate with updated library
     const library = document.querySelector('.library');
-    // Clear all books and repopulate
-    for (const card of library.children) {
-        console.log('test');
-        card.remove();
-    }
+    library.innerHTML = '';
     for (const book of myLibrary) {
-        createCard(book);
+        const card = createCard(book);
+        library.appendChild(card);
     }
+    const cards = library.querySelectorAll('.card');
+    let i = 0;
+    cards.forEach((card) => {
+        card.dataset.index = i;
+        const deleteButton = card.querySelector('.delete');
+        deleteButton.addEventListener('click', () => {
+            console.log(myLibrary);
+            myLibrary.splice(i, 1);
+        });
+    });
+}
+
+const dialog = document.querySelector(".add-modal");
+const newBook = document.querySelector('.new-book');
+const closeDialog = document.querySelector('.cancel');
+const addBook = document.querySelector('.add-book');
+
+newBook.addEventListener('click', () => {
+    dialog.showModal();
+});
+
+closeDialog.addEventListener('click', () => {
+    // Clear input fields before closing
+    const inputs = dialog.querySelectorAll('input');
+
+    for (const input of inputs) {
+        input.value = '';
+    }
+
+    document.querySelector('#read').checked = false;
+
+    dialog.close();
+});
+
+addBook.addEventListener('click', () => {
+    const title = document.querySelector('#title').value;
+    const author = document.querySelector('#author').value;
+    const pages = document.querySelector('#pages').value;
+    const read = document.querySelector('#read').checked;
+    let readStatus = '';
+    if (read == true) {readStatus = "read"} else {readStatus = "not read yet"};
+    const book = new Book(title, author, pages, readStatus);
+
+    // Add if fields are not blank and book not already in library
+    if (bookInLibrary(book)) {
+        alert('No duplicates!');
+        return;
+    }
+    if (book.title == '' || book.author =='' || book.pages =='') {
+        alert('no blanks!');
+    }
+    else addBookToLibrary(book);
+    displayBooks();
+})
+
+function bookInLibrary(newBook) {
+    for (const book of myLibrary) {
+        if (book.title === newBook.title) return true;
+    } return false;
 }
 
 const theHobbit = new Book("The Hobbit", "J.R.R. Tolkien", 295, "not read yet");
-const harryPotter = new Book("Harry Potter 1", "J.K. Rowling", 700, "read");
+const harryPotter = new Book("Harry Potter and the Sorcerer's Stone", "J.K. Rowling", 700, "read");
 addBookToLibrary(theHobbit);
 addBookToLibrary(harryPotter);
 displayBooks();
